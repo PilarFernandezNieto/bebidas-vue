@@ -2,9 +2,11 @@
 import { Dialog, DialogPanel, DialogTitle, TransitionChild, TransitionRoot } from '@headlessui/vue'
 import { useModalStore } from '@/stores/modal';
 import { useBebidasStore } from '@/stores/bebidas';
+import { useFavoritosStore } from '@/stores/favoritos';
 
 const modal = useModalStore();
 const bebidas = useBebidasStore();
+const favoritos = useFavoritosStore();
 
 const formatearIngredientes = () => {
     const ingredientesDiv = document.createElement("div");
@@ -22,9 +24,6 @@ const formatearIngredientes = () => {
     }
     return ingredientesDiv
 }
-
-
-
 </script>
 
 <template>
@@ -56,16 +55,13 @@ const formatearIngredientes = () => {
                                     </DialogTitle>
                                     <p class="text-lg text-gray-500">{{ bebidas.receta.strInstructions }}</p>
 
-
-
-
-
-
                                 </div>
                             </div>
                             <div class="mt-5 sm:mt-6 flex justify-between gap-4">
                                 <button type="button" @click="modal.handleClickModal()"
-                                    class="w-full rounded bg-gray-600 font-bold uppercase text-white shadow hover:bg-gray-500">Cerrar</button>
+                                    class="w-full rounded bg-gray-600 font-bold uppercase text-white shadow hover:bg-gray-500 p-3">Cerrar</button>
+                                <button type="button" @click="favoritos.handleClickFavorito()"
+                                    class="w-full rounded bg-orange-600 font-bold uppercase text-white shadow hover:bg-orange-500 p-3">{{ modal.textoBoton }}</button>
 
                             </div>
                         </DialogPanel>

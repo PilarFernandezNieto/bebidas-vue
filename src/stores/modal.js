@@ -1,17 +1,23 @@
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import { defineStore } from "pinia";
-import APIService from "@/services/APIService";
+import { useFavoritosStore } from "./favoritos";
+import { useBebidasStore } from "./bebidas";
 
 export const useModalStore = defineStore("modal", () => {
+  const favoritos = useFavoritosStore();
+  const bebidas = useBebidasStore();
   const modal = ref(false);
 
-  function handleClickModal(){
-    modal.value = !modal.value
+  function handleClickModal() {
+    modal.value = !modal.value;
   }
+
+  const textoBoton = computed(()=> {
+    return favoritos.existeFavorito(bebidas.receta.idDrink) ? "Eliminar de favoritos" : "Añadir a favoritos"
+  })
   return {
     modal,
+    textoBoton,
     handleClickModal,
   };
 });
-
-

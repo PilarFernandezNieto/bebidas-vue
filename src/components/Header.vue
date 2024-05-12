@@ -2,19 +2,26 @@
 import { computed } from 'vue';
 import { RouterLink, useRoute } from 'vue-router';
 import { useBebidasStore } from '../stores/bebidas';
+import { useNotificacionesStore } from '@/stores/notificaciones';
 
 const route = useRoute();
 const store = useBebidasStore();
-
-
-
+const notificaciones = useNotificacionesStore()
 
 const paginaInicio = computed(() => {
     return route.name === "inicio"
 }) 
 
 const handleSubmit = (() => {
-    // TODO: Validar
+    if(Object.values(store.busqueda).includes("")){
+
+        notificaciones.$patch({
+            texto: "Todos los campos son obligatorios",
+            mostrar: true,
+            error: true
+        })
+        return
+    }
 
     store.obtenerRecetas();
     
@@ -31,25 +38,27 @@ const handleSubmit = (() => {
                         <img src="/img/logo.svg" alt="logotipo" class="w-32">
                     </RouterLink>
                 </div>
-                <nav class="flex gap-4">
-                    <RouterLink :to="{name: 'inicio'}" class="text-white uppercase font-bold"
-                        active-class="text-orange-500">Inicio</RouterLink>
-                    <RouterLink :to="{ name: 'favoritos' }" class="text-white uppercase font-bold"
+                <nav class="flex gap-4 text-white">
+                    <RouterLink :to="{name: 'inicio'}" class="uppercase font-bold" active-class="text-orange-500">
+                        Inicio</RouterLink>
+                    <RouterLink :to="{ name: 'favoritos' }" class="uppercase font-bold"
                         active-class="text-orange-500">Favoritos</RouterLink>
 
                 </nav>
             </div>
             <form v-if="paginaInicio"
-                class="w-full  md:w-3/5 lg:w-1/2 2xl:w-1/3 bg-orange-400 my-32 p-10 rounded-lg shadow space-y-6" @submit.prevent="handleSubmit">
+                class="w-full  md:w-3/5 lg:w-1/2 2xl:w-1/3 bg-orange-400 my-32 p-10 rounded-lg shadow space-y-6"
+                @submit.prevent="handleSubmit">
                 <div class="space-y-4">
                     <label for="ingrediente" class="block text-white uppercase font-extrabold text-lg">Nombre o
                         Ingredientes</label>
-                    <input type="text" id="ingrediente" class="p-3 w-full rounded-lg focus:outline-none" v-model="store.busqueda.nombre"
-                        placeholder="Nombre o Ingrediente: ej, Vodka, Tequila, etc">
+                    <input type="text" id="ingrediente" class="p-3 w-full rounded-lg focus:outline-none"
+                        v-model="store.busqueda.nombre" placeholder="Nombre o Ingrediente: ej, Vodka, Tequila, etc">
                 </div>
                 <div class="space-y-4">
                     <label for="categoria" class="block text-white uppercase font-extrabold text-lg">Categoría</label>
-                    <select id="categoria" class="p-3 w-full rounded-lg focus:outline-none" v-model="store.busqueda.categoria">
+                    <select id="categoria" class="p-3 w-full rounded-lg focus:outline-none"
+                        v-model="store.busqueda.categoria">
                         <option value="">-- Seleccione --</option>
                         <option v-for="categoria in store.categorias" :key="categoria.strCategory"
                             :value="categoria.strCategory">{{ categoria.strCategory }}</option>
